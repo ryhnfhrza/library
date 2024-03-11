@@ -20,7 +20,10 @@ import (
 
 func main(){
 
+	//db 
 	db := app.NewDb()
+
+	//validate
 	validate := validator.New()
 
 	memberRepositroy := memberRepository.NewMemberRepository()
