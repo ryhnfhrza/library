@@ -16,6 +16,9 @@ func ErrorHandler(writer http.ResponseWriter, request *http.Request,err interfac
 	if validationErrors(writer, request, err){
 		return
 	}
+	if ConflictError(writer, request, err){
+		return
+	}
 	internalServerError(writer,request,err)
 }
 
@@ -53,6 +56,23 @@ func notFoundError(writer http.ResponseWriter,request *http.Request, err interfa
 	}else{
 		return false
 	}
+}
+
+func ConflictError(writer http.ResponseWriter, request *http.Request, err interface{}) bool {
+	exception, ok := err.(Conflict) 
+	if ok {
+			writer.Header().Set("Content-Type", "application/json")
+			writer.WriteHeader(http.StatusConflict)
+
+			webResponse := web.WebResponse{
+					Code:   http.StatusConflict,
+					Status: "CONFLICT",
+					Data:   exception.Error,
+			}
+			helper.WriteToResponseBody(writer, webResponse)
+			return true
+	}
+	return false
 }
 
 func internalServerError(writer http.ResponseWriter, request *http.Request,err interface{}){

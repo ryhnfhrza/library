@@ -4,6 +4,7 @@ import (
 	domain "library/Model/Domain"
 	bookResponse "library/Model/Web/BookWeb"
 	memberResponse "library/Model/Web/MemberWeb"
+	transactionResponse "library/Model/Web/TransactionWeb"
 )
 
 func ToMemberResponse(member domain.Member)memberResponse.MemberResponse{
@@ -40,4 +41,25 @@ func ToBookResponses(books []domain.Book)[]bookResponse.BookResponse{
 		bookResponses = append(bookResponses, ToBookResponse(book))
 	}
 	return bookResponses
+}
+
+func ToTransactionBorrowReturnResponse(transaction domain.Transaction)transactionResponse.TransactionBorrowReturnResponse{
+	return transactionResponse.TransactionBorrowReturnResponse{
+		MemberId: transaction.MemberId,
+		BookId: transaction.BookId,
+		LoanDate: transaction.LoanDate,
+		IsReturn: transaction.IsReturn,
+	}
+}
+
+func ToTransactionFindResponse(transaction domain.TransactionTracking)transactionResponse.TransactionFindResponse{
+	return transactionResponse.TransactionFindResponse{
+		MemberId: transaction.MemberId,
+		MemberName: transaction.MemberName,
+		MemberEmail: transaction.MemberEmail,
+		BookId: transaction.BookId,
+		BookTitle: transaction.BookTitle,
+		LoanDate: transaction.LoanDate,
+		IsReturn: transaction.IsReturn,
+	}
 }

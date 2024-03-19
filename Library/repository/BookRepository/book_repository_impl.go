@@ -52,7 +52,7 @@ func(repository *BookRepositoryImpl)FindBookById(ctx context.Context, tx *sql.Tx
 		return book , nil
 
 	}else{
-		return book,errors.New("book with id "+ bookId+" not found")
+		return book,errors.New("book id "+ bookId+" not found")
 	}
 }
 

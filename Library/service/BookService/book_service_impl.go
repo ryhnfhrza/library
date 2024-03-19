@@ -58,7 +58,10 @@ func(service *BookServiceImpl)UpdateBook(ctx context.Context,request web.BookUpd
 	if err != nil {
 		panic(exception.NewNotFoundError(err.Error()))
 	}
-
+	request.Title = helper.GetDefaultIfEmpty(request.Title,book.Title)
+	request.Author = helper.GetDefaultIfEmpty(request.Author,book.Author)
+	request.Category = helper.GetDefaultIfEmpty(request.Category,book.Category)
+	
 	book.Title = request.Title
 	book.Author = request.Author
 	book.Category = request.Category

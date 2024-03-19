@@ -4,12 +4,15 @@ import (
 	"library/app"
 	bookController "library/controller/BookController"
 	memberController "library/controller/MemberController"
+	transactionController "library/controller/TransactionController"
 	"library/exception"
 	"library/helper"
 	bookRepository "library/repository/BookRepository"
 	memberRepository "library/repository/MemberRepository"
+	transactionRepository "library/repository/TransactionRepository"
 	bookService "library/service/BookService"
 	memberService "library/service/MemberService"
+	transactionService "library/service/TransactionService"
 	"net/http"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -34,6 +37,10 @@ func main(){
 	bookService := bookService.NewBookService(bookRepository,db,validate)
 	bookController := bookController.NewBookController(bookService)
 
+	transactionRepository := transactionRepository.NewTransactionRepository()
+	transactionService := transactionService.NewTransactionService(transactionRepository,memberRepositroy,bookRepository,db,validate)
+	transactionController := transactionController.NewTransactionController(transactionService)
+
 	router := httprouter.New()
 
 	//member
@@ -46,8 +53,13 @@ func main(){
 	router.GET("/library/books",bookController.FindAllBook)
 	router.GET("/library/books/:bookId",bookController.FindBookById)
 	router.POST("/library/books",bookController.AddBook)
-	router.PUT("/library/books/:bookId",bookController.UpdateBook)
+	router.PATCH("/library/books/:bookId",bookController.UpdateBook)
 	router.DELETE("/library/books/:bookId",bookController.DeleteBook)
+
+	//transaction
+	router.GET("/library/findborrowed/:bookId",transactionController.FindMemberWhoBorrowBook)
+	router.POST("/library/borrow/:memberId",transactionController.BorrowBook)
+	router.PATCH("/library/return/:memberId",transactionController.ReturnBook)
 
 	router.PanicHandler = exception.ErrorHandler
 
@@ -58,4 +70,5 @@ func main(){
 
 	err := server.ListenAndServe()
 	helper.PanicIfError(err)
+
 }
